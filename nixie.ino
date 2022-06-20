@@ -93,69 +93,17 @@ void setup() {
     TCCR1B = TCCR1B & 0b11111000 | 1;   //pwm
 
     pwm(180);
-
     TCCR2B = (TCCR2B & B11111000) | 2;  //timer2
-    TCCR2A |= (1 << WGM21);
-    TIMSK2 |= (1 << OCIE2A);
+
+    bitSet(TCCR2A, WGM21);
+    bitSet(TIMSK2, OCIE2A);
+
+    randomSeed(analogRead(A7));
+    buf[0] = buf[1] = buf[2] = 1;
+    buf[3] = 3;
 }
-/*
-void loop() {
-#if debugMode == 1
-    if (Serial.available()) { x = Serial.parseInt();debug(x); }
-#endif
-
-
-    static bool flag = false;
-    if (millis() % 100 != 0) flag = false; else {
-        if (!flag) {
-            flag = true;
-            t = rtc.getTime();
-            //updData(t.hour * 100 + t.min);
-            buf[0] = t.hour / 10;
-            buf[1] = t.hour % 10;
-            buf[2] = t.min / 10;
-            buf[3] = t.min % 10;
-        }
-    }
-
-    static uint32_t tmr = 0;
-    if (millis() - tmr >= period) {
-        tmr = millis();
-        t = rtc.getTime();
-        //updData(t.hour * 100 + t.min);
-        buf[0] = (t.hour / 10 == 0 ? 10 : t.hour / 10);
-        buf[1] = t.hour % 10;
-        buf[2] = t.min / 10;
-        buf[3] = t.min % 10;
-    }
-
-    display();
-}
-*/
 
 void loop() {
-    /*
-    static uint32_t tmr = 0;
-    if (millis() - tmr >= 1000) {
-        static uint8_t i = 0;
-        tmr = millis();
-        buf[0] = i;
-        buf[1] = i;
-        buf[2] = i;
-        buf[3] = i;
-        if (++i >= 10)i = 0;
-    }
-    static uint32_t tmr = 0;
-    if (millis() - tmr >= 100) {
-        static uint8_t i = 0;
-        static uint8_t con = 0;
-        tmr = millis();
-
-        buf[i] = con;
-        if (++con >= 10) { buf[i] = 10;con = 0;i++; }
-        if (i >= 4)i = 0;
-    }
-    */
     static uint32_t tmr = 0;
     if (millis() - tmr >= 100) {
         tmr = millis();
@@ -166,16 +114,3 @@ void loop() {
         buf[3] = t.min % 10;
     }
 }
-/*
-    static uint8_t con = 0;
-    static uint32_t tmr = 0;
-    if (millis() - tmr >= 100) {
-        tmr = millis();
-        static uint8_t i = 0;
-
-        buf[i] = con;
-
-        if (++con >= 10)i++;
-        if (i >= 4)i = 0;
-    }
-*/
